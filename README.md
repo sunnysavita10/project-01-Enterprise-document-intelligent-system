@@ -81,6 +81,25 @@ python -m streamlit run data_downloading_script/streamlit_app.py
 
 Open [http://localhost:8501](http://localhost:8501) to choose publishers and the document count. Downloads are saved in `data_downloading_script/downloads/`. The downloader runs independently of the FastAPI app.
 
+## Planned AWS ETL Pipeline
+
+EventBridge Scheduler triggers recurring runs. For an on-demand run, start the state machine manually with the publishers and document count. The pipeline runs independently of the EDIS app and has no Streamlit dependency.
+
+```text
+EventBridge Scheduler / Manual trigger
+                ↓
+      Step Functions Standard
+                ↓
+      Publisher jobs run in parallel
+                ↓
+      Extract → Transform → Load
+      Lambda      Lambda      S3
+                ↓
+      Run report in S3 + CloudWatch logs
+```
+
+Each publisher job discovers and validates its documents before writing the output to S3. A Lambda worker can perform both the extract and transform steps. Step Functions tracks execution status, S3 holds the run report, and CloudWatch captures worker logs.
+
 ## Implementation Status
 
 ### Architecture Layers
