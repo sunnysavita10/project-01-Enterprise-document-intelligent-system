@@ -1,5 +1,35 @@
 # Enterprise Document Intelligence System
 
+## Implementation Status
+
+### Architecture Layers
+
+| Layer | Status | What EDIS Includes |
+| --- | --- | --- |
+| UI Layer | ✅ | HTML, CSS, and JavaScript. Login, signup, and workspace UI. |
+| API Layer | ✅ | FastAPI endpoints for upload, chat, analysis, comparison, review, and health checks. |
+| AI Layer | ✅ | LangChain and LangGraph workflows. Groq is the default provider. OpenAI and Gemini can be selected through `.env`. |
+| Data Layer | ✅ | Chroma vector index, SQLite for accounts, and local JSON storage for chat history and review decisions. |
+| Cloud / Deployment Layer | ⏳ | A Dockerfile is available. The container build is unverified, and the AWS ECS Fargate deployment workflow is pending. |
+| Monitoring / Tracing Layer | ✅ | `structlog` JSONL logs, request IDs, and LangSmith traces. Infrastructure dashboards and alerts are pending. |
+| Evaluation Layer | ✅ | An offline Document Chat benchmark that checks factual accuracy, citations, missing evidence, and routing. |
+| Security Layer | ✅ | Login, password hashing, JWT support, session ownership, upload validation, and trace masking. |
+| Testing Layer | ✅ | Flake8, pytest, and a GitHub Actions workflow for pushes and pull requests. 31 tests passed locally. |
+
+### Feature Status
+
+| Feature | Status | What EDIS Includes |
+| --- | --- | --- |
+| Validation (Pydantic) | ✅ | API schemas, intent routing, and structured result validation. |
+| Guardrails | ✅ | One retry for invalid intent, citation ID validation, and a safe response when no evidence is found. |
+| Evaluation | ✅ | Seven benchmark cases for Document Chat. |
+| MCP Client / Server | ⏳ | Integration is pending. |
+| Human-in-the-Loop (HITL) | ✅ | **Approve** and **Request changes** options for Analysis and Compare, with saved review notes. |
+| Memory | ✅ | Separate histories for General Chat and Document Chat. Users can resume after a refresh in the same tab or start a **New Chat**. |
+| Caching | ✅ | An in-memory `cachetools` cache for Analysis and Compare results. |
+| LLM Gateway | ⏳ | Gateway options are documented below. The app currently calls providers directly. |
+| Async | ✅ | Upload, dataset loading, analysis, and comparison use async API routes. Blocking operations run in a thread pool. |
+
 ## Configure the language model
 
 Run the commands below from the project folder with the project's `env` Python environment installed. If you need a local configuration file, copy [`.env.example`](.env.example) to `.env`.
