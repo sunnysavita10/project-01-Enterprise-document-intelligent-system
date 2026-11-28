@@ -1,5 +1,86 @@
 # Enterprise Document Intelligence System
 
+## Run EDIS locally on Windows
+
+### 1. Clone the repository
+
+Open **Command Prompt** in the folder where you want to keep the project. You can also copy the HTTPS URL from the green **Code** button on GitHub.
+
+```cmd
+git clone https://github.com/sunnysavita10/project-01-Enterprise-document-intelligent-system.git
+cd project-01-Enterprise-document-intelligent-system
+```
+
+### 2. Install uv and select Python 3.12
+
+If `uv` is missing, install it with WinGet and reopen your terminal. [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/#winget)
+
+```cmd
+winget install --id=astral-sh.uv -e
+```
+
+From the project folder, list the available interpreters, install Python 3.12 if needed, and create the `env` virtual environment. `--seed` installs `pip` into it.
+
+```cmd
+uv python list
+uv python install 3.12
+uv venv env --python 3.12 --seed
+```
+
+### 3. Activate the environment and install dependencies
+
+In **Command Prompt**, run:
+
+```cmd
+env\Scripts\activate.bat
+python -m pip install -r requirements.txt
+```
+
+In **PowerShell**, run:
+
+```powershell
+.\env\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+### 4. Configure `.env`
+
+In **Command Prompt**, create `.env` if it is missing and open it for editing.
+
+```cmd
+if not exist .env copy .env.example .env
+notepad .env
+```
+
+In **PowerShell**, use:
+
+```powershell
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+notepad .env
+```
+
+With the default setup, enter `GROQ_API_KEY` for the LLM and `HF_TOKEN` for Hugging Face embeddings. To use OpenAI or Gemini, follow [Configure the language model](#configure-the-language-model).
+
+### 5. Start the app
+
+Run this command from the project folder with the environment active.
+
+```cmd
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8080 --reload
+```
+
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser. Press **Ctrl+C** in the terminal to stop the server.
+
+### Run the standalone Streamlit downloader
+
+Open a separate terminal in the project root, activate `env` as shown above, and run:
+
+```cmd
+python -m streamlit run data_downloading_script/streamlit_app.py
+```
+
+Open [http://localhost:8501](http://localhost:8501) to choose publishers and the document count. Downloads are saved in `data_downloading_script/downloads/`. The downloader runs independently of the FastAPI app.
+
 ## Implementation Status
 
 ### Architecture Layers
@@ -32,7 +113,7 @@
 
 ## Configure the language model
 
-Run the commands below from the project folder with the project's `env` Python environment installed. If you need a local configuration file, copy [`.env.example`](.env.example) to `.env`.
+Run the commands below from the project folder after completing [Run EDIS locally on Windows](#run-edis-locally-on-windows).
 
 Add the API key for each provider you select. Groq is the default. Set `LLM_PROVIDER` to change the provider for document chat, analysis, and comparison. Each model variable is optional and accepts a model ID supported by the selected provider.
 
